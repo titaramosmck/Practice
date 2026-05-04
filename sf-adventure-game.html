@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDI'S SF QUEST 🌉</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --orange: #FF6B35;
+            --coral: #FF4466;
+            --gold: #FFC857;
+            --teal: #2EC4B6;
+            --navy: #1A1A2E;
+            --purple: #6C5CE7;
+            --pink: #FD79A8;
+            --sky: #74B9FF;
+            --fog: #DFE6E9;
+            --green: #00B894;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: var(--navy);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .fog-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.02) 100px,
+                transparent 200px
+            );
+            animation: fogDrift 30s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes fogDrift {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            from { opacity: 0.3; }
+            to { opacity: 1; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.95); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+
+        .title-logo {
+            font-family: 'Bangers', cursive;
+            font-size: clamp(3rem, 8vw, 5rem);
+            text-align: center;
+            background: linear-gradient(135deg, var(--orange), var(--coral), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            letter-spacing: 3px;
+            animation: float 3s ease-in-out infinite;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-family: 'Press Start 2P', monospace;
+            font-size: clamp(0.5rem, 2vw, 0.75rem);
+            color: var(--teal);
+            text-align: center;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .bridge-art {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: bounceIn 0.8s ease-out;
+        }
+
+        .player-select-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .player-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .player-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border: 3px solid transparent;
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .player-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.05));
+            border-radius: 20px;
+        }
+
+        .player-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--gold);
+            box-shadow: 0 20px 40px rgba(255, 200, 87, 0.2);
+        }
+
+        .player-card:nth-child(1):hover { border-color: var(--orange); box-shadow: 0 20px 40px rgba(255, 107, 53, 0.2); }
+        .player-card:nth-child(2):hover { border-color: var(--teal); box-shadow: 0 20px 40px rgba(46, 196, 182, 0.2); }
+        .player-card:nth-child(3):hover { border-color: var(--purple); box-shadow: 0 20px 40px rgba(108, 92, 231, 0.2); }
+
+        .player-avatar {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+
+        .player-name {
+            font-family: 'Bangers', cursive;
+            font-size: 1.8rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .player-card:nth-child(1) .player-name { color: var(--orange); }
+        .player-card:nth-child(2) .player-name { color: var(--teal); }
+        .player-card:nth-child(3) .player-name { color: var(--purple); }
+
+        .player-role {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .question-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .player-badge {
+            font-family: 'Bangers', cursive;
+            font-size: 1.2rem;
+            padding: 5px 15px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--teal), var(--gold));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .question-number {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.65rem;
+            color: var(--teal);
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-family: 'Bangers', cursive;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--gold);
+            line-height: 1.3;
+        }
+
+        .question-subtext {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .options-grid.single-col {
+            grid-template-columns: 1fr;
+        }
+
+        .option-btn {
+            background: rgba(255,255,255,0.08);
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 15px;
+            padding: 18px 15px;
+            color: white;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: var(--gold);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 200, 87, 0.15);
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(135deg, rgba(46, 196, 182, 0.3), rgba(108, 92, 231, 0.3));
+            border-color: var(--teal);
+            transform: scale(0.97);
+            box-shadow: inset 0 0 20px rgba(46, 196, 182, 0.2);
+        }
+
+        .option-btn .emoji {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 600px;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 14px 35px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(135deg, var(--orange), var(--coral));
+            color: white;
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .nav-btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 107, 53, 0.5);
+        }
+
+        .nav-btn.secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .nav-btn.secondary:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Results Screen */
+        .results-container {
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .results-title {
+            font-family: 'Bangers', cursive;
+            font-size: clamp(2rem, 5vw, 3rem);
+            text-align: center;
+            background: linear-gradient(135deg, var(--gold), var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .results-subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        .result-category {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .result-category:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(5px);
+        }
+
+        .result-category-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .result-category-icon {
+            font-size: 1.8rem;
+        }
+
+        .result-category-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.4rem;
+            color: var(--gold);
+        }
+
+        .result-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-left: 10px;
+        }
+
+        .result-tag {
+            background: rgba(46, 196, 182, 0.2);
+            border: 1px solid rgba(46, 196, 182, 0.4);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            color: var(--teal);
+        }
+
+        .result-tag.done {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.5);
+            text-decoration: line-through;
+        }
+
+        .result-tag.must-do {
+            background: rgba(255, 107, 53, 0.2);
+            border-color: rgba(255, 107, 53, 0.4);
+            color: var(--orange);
+        }
+
+        .score-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, rgba(255, 200, 87, 0.2), rgba(255, 107, 53, 0.2));
+            border: 2px solid var(--gold);
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-family: 'Bangers', cursive;
+            font-size: 1.3rem;
+            color: var(--gold);
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .reset-btn {
+            display: block;
+            margin: 30px auto 0;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 12px 30px;
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 50px;
+            color: rgba(255,255,255,0.6);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            border-color: var(--coral);
+            color: var(--coral);
+        }
+
+        .comparison-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .comparison-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.8rem;
+            text-align: center;
+            color: var(--pink);
+            margin-bottom: 20px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            text-align: center;
+        }
+
+        .comparison-col-header {
+            font-family: 'Bangers', cursive;
+            font-size: 1.1rem;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .comparison-col-header:nth-child(1) { color: var(--orange); }
+        .comparison-col-header:nth-child(2) { color: var(--teal); }
+        .comparison-col-header:nth-child(3) { color: var(--purple); }
+
+        .match-indicator {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            background: rgba(0, 184, 148, 0.1);
+            border: 1px solid rgba(0, 184, 148, 0.3);
+        }
+
+        .match-indicator .match-text {
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            color: var(--green);
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        @media (max-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            .player-cards {
+                grid-template-columns: 1fr;
+            }
+            .comparison-grid {
+                grid-template-columns: 1fr;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="fog-layer"></div>
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <!-- WELCOME SCREEN -->
+        <div class="screen active" id="screen-welcome">
+            <div class="bridge-art">🌉</div>
+            <h1 class="title-logo">EDI'S SF QUEST</h1>
+            <p class="subtitle">10 DAYS. 1 CITY. INFINITE POSSIBILITIES.<br>JULY 2026</p>
+            <div class="player-select-title">Who's playing?</div>
+            <div class="player-cards">
+                <div class="player-card" onclick="selectPlayer('edi')">
+                    <span class="player-avatar">🕹️</span>
+                    <div class="player-name">EDI</div>
+                    <div class="player-role">The Guest Star</div>
+                </div>
+                <div class="player-card" onclick="startMiniGame()">
+                    <span class="player-avatar">🚲</span>
+                    <div class="player-name">MINI GAME</div>
+                    <div class="player-role">SF Biker</div>
+                </div>
+            </div>
+            <button class="nav-btn secondary" style="margin-top: 30px;" onclick="viewEdiResults()">📊 View Edi's Results</button>
+        </div>
+
+        <!-- MINI GAME SCREEN -->
+        <div class="screen" id="screen-minigame">
+            <div style="width:100%; text-align:center; margin-bottom:10px;">
+                <span class="player-badge" style="font-size:1rem;">🚲 SF BIKER</span>
+                <div style="color:rgba(255,255,255,0.7); font-size:0.9rem; margin-top:8px;">Dodge cars and crazy seals to bike safely across the Golden Gate Bridge!</div>
+                <div id="game-score" style="font-family:'Press Start 2P',monospace; font-size:0.6rem; color:var(--gold); margin-top:8px;">SCORE: 0</div>
+            </div>
+            <canvas id="game-canvas" width="750" height="300" style="background: linear-gradient(180deg, #74B9FF 0%, #74B9FF 60%, #00B894 60%, #00B894 100%); border-radius:15px; border:3px solid rgba(255,255,255,0.2); max-width:100%; cursor:pointer;"></canvas>
+            <div style="text-align:center; margin-top:15px;">
+                <p style="color:rgba(255,255,255,0.6); font-size:0.85rem;" id="game-instructions">Click or press SPACE to jump! Collect landmarks, avoid obstacles.</p>
+                <button class="nav-btn secondary" style="margin-top:15px;" onclick="goHome()">← Back</button>
+            </div>
+        </div>
+
+        <!-- GAME WIN SCREEN -->
+        <div class="screen" id="screen-gamewin">
+            <div class="bridge-art" style="font-size:5rem;">🎉</div>
+            <div class="results-title">EDI MADE IT!</div>
+            <div class="results-subtitle" style="margin-bottom:30px;">You ran through all of SF and found your siblings!</div>
+            <div style="display:flex; gap:30px; justify-content:center; font-size:3rem; margin-bottom:20px;">
+                <div style="text-align:center;"><div>🧙</div><div style="font-family:'Bangers',cursive; font-size:1.2rem; color:var(--teal);">XAVI</div></div>
+                <div style="text-align:center;"><div>🏃</div><div style="font-family:'Bangers',cursive; font-size:1.2rem; color:var(--orange);">EDI</div></div>
+                <div style="text-align:center;"><div>🔮</div><div style="font-family:'Bangers',cursive; font-size:1.2rem; color:var(--purple);">TITA</div></div>
+            </div>
+            <div class="score-badge" id="final-game-score">🏆 Final Score: 0</div>
+            <div class="nav-buttons">
+                <button class="nav-btn secondary" onclick="goHome()">← Home</button>
+                <button class="nav-btn primary" onclick="startMiniGame()">Play Again 🔄</button>
+            </div>
+        </div>
+
+        <!-- QUESTION SCREEN -->
+        <div class="screen" id="screen-question">
+            <div class="question-header">
+                <div class="player-badge" id="current-player-badge">🎒 EDI</div>
+                <div class="question-number" id="q-number">ROUND 1 / 12</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="question-text" id="q-text"></div>
+            <div class="question-subtext" id="q-subtext"></div>
+            <div class="options-grid" id="options-container"></div>
+            <div class="nav-buttons">
+                <button class="nav-btn secondary" id="btn-back" onclick="prevQuestion()">← Back</button>
+                <button class="nav-btn primary" id="btn-next" onclick="nextQuestion()">Next →</button>
+            </div>
+        </div>
+
+        <!-- RESULTS SCREEN -->
+        <div class="screen" id="screen-results">
+            <div class="results-container" id="results-container"></div>
+        </div>
+    </div>
+
+    <script>
+        // Generate stars
+        const starsEl = document.getElementById('stars');
+        for (let i = 0; i < 80; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 2 + 's';
+            star.style.width = (Math.random() * 2 + 1) + 'px';
+            star.style.height = star.style.width;
+            starsEl.appendChild(star);
+        }
+
+        const QUESTIONS_EDI = [
+            {
+                text: "What's your SF landmark status?",
+                subtext: "Select the ones you HAVEN'T done yet",
+                multi: true,
+                category: "landmarks",
+                options: [
+                    { emoji: "🌉", label: "Walked the Golden Gate Bridge", id: "gg_walk" },
+                    { emoji: "🏝️", label: "Visited Alcatraz", id: "alcatraz" },
+                    { emoji: "⛵", label: "Sausalito", id: "sausalito_landmark" },
+                    { emoji: "🌳", label: "Golden Gate Park / De Young", id: "gg_park" },
+                    { emoji: "🏛️", label: "Palace of Fine Arts", id: "palace" },
+                    { emoji: "🌀", label: "Lombard Street (crooked street)", id: "lombard" },
+                    { emoji: "🏛️", label: "Legion of Honor", id: "legion_honor" },
+                    { emoji: "🏠", label: "Tita's New Apartment", id: "tita_apt" },
+                    { emoji: "🪜", label: "Lyon Street Steps", id: "lyon_steps" },
+                    { emoji: "🎬", label: "Princess Diaries high school", id: "princess_diaries" },
+                    { emoji: "👽", label: "Yoda Fountain", id: "yoda_fountain" },
+                    { emoji: "🏘️", label: "Painted Ladies", id: "painted_ladies" },
+                    { emoji: "✅", label: "I've done them all!", id: "all_done_landmarks" }
+                ]
+            },
+            {
+                text: "Neighborhoods you haven't explored?",
+                subtext: "Select the ones you HAVEN'T been to yet",
+                multi: true,
+                category: "neighborhoods",
+                options: [
+                    { emoji: "⛵", label: "The Marina", id: "marina" },
+                    { emoji: "📚", label: "North Beach / Little Italy", id: "north_beach" },
+                    { emoji: "🐉", label: "Chinatown", id: "chinatown" },
+                    { emoji: "🏘️", label: "Pacific Heights", id: "pac_heights" },
+                    { emoji: "🖼️", label: "Mission District (Murals)", id: "mission" },
+                    { emoji: "💰", label: "Financial District / Embarcadero", id: "fidi" },
+                    { emoji: "🏯", label: "Japantown", id: "japantown" },
+                    { emoji: "🍽️", label: "NoPa", id: "nopa" },
+                    { emoji: "✅", label: "I've been to them all!", id: "all_done_neighborhoods" }
+                ]
+            },
+            {
+                text: "Nature & outdoors you haven't done?",
+                subtext: "Select the ones you HAVEN'T done yet",
+                multi: true,
+                category: "nature",
+                options: [
+                    { emoji: "🥾", label: "Lands End Trail", id: "lands_end" },
+                    { emoji: "🌲", label: "Muir Woods (Redwoods)", id: "muir_woods" },
+                    { emoji: "🏖️", label: "Crissy Field Beach", id: "crissy_field_nature" },
+                    { emoji: "🌄", label: "Twin Peaks Sunset", id: "twin_peaks" },
+                    { emoji: "🚴", label: "Biked across GG Bridge to Sausalito", id: "bike_sausalito" },
+                    { emoji: "🦭", label: "Watched seals at Pier 39", id: "seals" },
+                    { emoji: "🍵", label: "Japanese Tea Garden", id: "tea_garden_nature" },
+                    { emoji: "🦬", label: "Bison Paddock", id: "bison_paddock_nature" },
+                    { emoji: "🌿", label: "SF Botanical Garden", id: "botanical_garden" },
+                    { emoji: "🌺", label: "Conservatory of Flowers", id: "conservatory_nature" },
+                    { emoji: "🏝️", label: "Angel Island", id: "angel_island_nature" },
+                    { emoji: "🔦", label: "Point Bonita Lighthouse", id: "point_bonita" },
+                    { emoji: "🌳", label: "Glen Canyon Park", id: "glen_park" },
+                    { emoji: "🐠", label: "Aquarium of the Bay", id: "aquarium" },
+                    { emoji: "✅", label: "I've done them all!", id: "all_done_nature" }
+                ]
+            },
+            {
+                text: "Food spots you haven't tried?",
+                subtext: "Select the ones you HAVEN'T tried yet",
+                multi: true,
+                category: "food",
+                options: [
+                    { emoji: "🥐", label: "The Mill almond croissants (Tita's favorite)", id: "the_mill" },
+                    { emoji: "🍵", label: "Cafe Maiko matcha ice cream", id: "cafe_maiko" },
+                    { emoji: "🍺", label: "Radhaus german beer / sausage (Eugenio's favorite)", id: "radhaus" },
+                    { emoji: "🦃", label: "Eugenio's Thanksgiving turkey (Leo's favorite)", id: "eugenio_turkey" },
+                    { emoji: "🍔", label: "Sausalito's burgers", id: "sausalito_burgers" },
+                    { emoji: "🍦", label: "Ghirardelli chocolate / ice cream", id: "ghirardelli" },
+                    { emoji: "🍝", label: "Pink Onion's pasta (Xavi's favorite)", id: "pink_onion" },
+                    { emoji: "✅", label: "I've tried them all!", id: "all_done_food" }
+                ]
+            },
+            {
+                text: "Day trip spots that interest you?",
+                subtext: "Pick any that sound fun",
+                multi: true,
+                category: "daytrip_picks",
+                options: [
+                    { emoji: "🌊", label: "Half Moon Bay / coastal drive", id: "coast" },
+                    { emoji: "🌁", label: "Sausalito & Tiburon", id: "sausalito" },
+                    { emoji: "🏔️", label: "Point Reyes National Seashore", id: "point_reyes" },
+                    { emoji: "🏝️", label: "Angel Island", id: "angel_island_daytrip" },
+                    { emoji: "🛍️", label: "Outlets shopping", id: "outlets" },
+                    { emoji: "🏖️", label: "Beach / lake day", id: "beach_lake" },
+                    { emoji: "🎯", label: "Activate", id: "activate" }
+                ]
+            },
+        
+        ];
+
+        const QUESTIONS_HOST = [
+            {
+                text: "Which spots have YOU been to?",
+                subtext: "Select all that you've done",
+                multi: true,
+                category: "landmarks_done",
+                options: [
+                    { emoji: "🌉", label: "Walked the Golden Gate Bridge", id: "gg_walk" },
+                    { emoji: "🏝️", label: "Visited Alcatraz", id: "alcatraz" },
+                    { emoji: "🎨", label: "Explored Fisherman's Wharf", id: "wharf" },
+                    { emoji: "🚋", label: "Rode a Cable Car", id: "cable_car" },
+                    { emoji: "🌳", label: "Golden Gate Park / De Young", id: "gg_park" },
+                    { emoji: "🏛️", label: "Palace of Fine Arts", id: "palace" }
+                ]
+            },
+            {
+                text: "Neighborhoods you know well?",
+                subtext: "Where can you play tour guide?",
+                multi: true,
+                category: "neighborhoods_known",
+                options: [
+                    { emoji: "🌈", label: "The Castro", id: "castro" },
+                    { emoji: "📚", label: "North Beach / Little Italy", id: "north_beach" },
+                    { emoji: "🐉", label: "Chinatown", id: "chinatown" },
+                    { emoji: "🎸", label: "Haight-Ashbury", id: "haight" },
+                    { emoji: "🖼️", label: "Mission District", id: "mission" },
+                    { emoji: "💰", label: "Financial District / Embarcadero", id: "fidi" }
+                ]
+            },
+            {
+                text: "Nature / outdoors you've done?",
+                subtext: "Check off your outdoor conquests",
+                multi: true,
+                category: "nature_done",
+                options: [
+                    { emoji: "🥾", label: "Lands End Trail", id: "lands_end" },
+                    { emoji: "🌲", label: "Muir Woods", id: "muir_woods" },
+                    { emoji: "🏖️", label: "Baker Beach", id: "baker_beach" },
+                    { emoji: "🌄", label: "Twin Peaks", id: "twin_peaks" },
+                    { emoji: "🚴", label: "Biked to Sausalito", id: "bike_sausalito" },
+                    { emoji: "🦭", label: "Pier 39 seals", id: "seals" }
+                ]
+            },
+            {
+                text: "Food spots you'd recommend?",
+                subtext: "What should we make sure Edi tries?",
+                multi: true,
+                category: "food_recs",
+                options: [
+                    { emoji: "🦀", label: "Clam chowder bread bowl", id: "chowder" },
+                    { emoji: "🌮", label: "Mission burrito", id: "burrito" },
+                    { emoji: "🥟", label: "Dim sum", id: "dim_sum" },
+                    { emoji: "🍦", label: "Ghirardelli", id: "ghirardelli" },
+                    { emoji: "☕", label: "SF coffee scene", id: "coffee" },
+                    { emoji: "🍽️", label: "Fancy dinner spot", id: "fancy_dinner" }
+                ]
+            },
+            {
+                text: "Activities you'd be DOWN for?",
+                subtext: "What sounds fun to do with Edi?",
+                multi: true,
+                category: "activities_down",
+                options: [
+                    { emoji: "🎤", label: "Live music / comedy show", id: "live_show" },
+                    { emoji: "⚾", label: "Giants game", id: "giants" },
+                    { emoji: "🎭", label: "Speakeasy / bars", id: "speakeasy" },
+                    { emoji: "🍳", label: "Epic brunch", id: "brunch" },
+                    { emoji: "🎮", label: "Arcade / games", id: "games" },
+                    { emoji: "🚤", label: "Bay cruise", id: "boat" }
+                ]
+            },
+            {
+                text: "Day trips you'd join?",
+                subtext: "Pick the ones you'd be into",
+                multi: true,
+                category: "daytrips_join",
+                options: [
+                    { emoji: "🍷", label: "Wine country", id: "wine" },
+                    { emoji: "🌊", label: "Half Moon Bay", id: "coast" },
+                    { emoji: "🌁", label: "Sausalito / Tiburon", id: "sausalito" },
+                    { emoji: "🏔️", label: "Point Reyes", id: "point_reyes" },
+                    { emoji: "🌲", label: "Redwood hike", id: "big_basin" },
+                    { emoji: "🏖️", label: "Santa Cruz", id: "santa_cruz" }
+                ]
+            },
+            {
+                text: "Hidden gems you know about?",
+                subtext: "Secret spots to show Edi",
+                multi: true,
+                category: "hidden_gems",
+                options: [
+                    { emoji: "🌿", label: "16th Ave Tiled Steps", id: "tiled_steps" },
+                    { emoji: "📖", label: "City Lights Bookstore", id: "city_lights" },
+                    { emoji: "🎵", label: "Jazz at a dive bar", id: "jazz" },
+                    { emoji: "🖼️", label: "Street art in Clarion Alley", id: "clarion" },
+                    { emoji: "🌊", label: "Sutro Baths ruins", id: "sutro" },
+                    { emoji: "🍕", label: "Late night food spot", id: "late_food" }
+                ]
+            },
+            {
+                text: "Your availability those 10 days?",
+                subtext: "Roughly how available are you?",
+                multi: false,
+                category: "availability",
+                options: [
+                    { emoji: "🎉", label: "Basically free the whole time!", id: "avail_full" },
+                    { emoji: "📅", label: "Free evenings + weekends", id: "avail_partial" },
+                    { emoji: "😬", label: "Only a few days free", id: "avail_limited" },
+                    { emoji: "🤷", label: "Not sure yet", id: "avail_unknown" }
+                ]
+            }
+        ];
+
+        let currentPlayer = null;
+        let currentQuestionIndex = 0;
+        let answers = {};
+        let allPlayerData = JSON.parse(localStorage.getItem('sfquest_data') || '{}');
+
+        function viewEdiResults() {
+            if (!allPlayerData.edi) {
+                alert("Edi hasn't played yet! Tell him to complete the quiz first.");
+                return;
+            }
+            currentPlayer = 'edi';
+            answers = allPlayerData.edi;
+            showResults();
+        }
+
+        function selectPlayer(player) {
+            currentPlayer = player;
+            currentQuestionIndex = 0;
+            answers = allPlayerData[player] || {};
+            showScreen('screen-question');
+            renderQuestion();
+        }
+
+        function getQuestions() {
+            return currentPlayer === 'edi' ? QUESTIONS_EDI : QUESTIONS_HOST;
+        }
+
+        function renderQuestion() {
+            const questions = getQuestions();
+            const q = questions[currentQuestionIndex];
+            const total = questions.length;
+
+            document.getElementById('q-number').textContent = `ROUND ${currentQuestionIndex + 1} / ${total}`;
+            document.getElementById('q-text').textContent = q.text;
+            document.getElementById('q-subtext').textContent = q.subtext;
+            document.getElementById('progress-fill').style.width = ((currentQuestionIndex + 1) / total * 100) + '%';
+
+            const playerLabels = {
+                edi: '🕹️ EDI',
+                sibling1: '🧙 XAVI',
+                sibling2: '🔮 TITA'
+            };
+            document.getElementById('current-player-badge').textContent = playerLabels[currentPlayer];
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            container.className = 'options-grid' + (q.options.length <= 4 && !q.multi ? '' : '');
+
+            const currentAnswers = answers[q.category] || [];
+
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn' + (currentAnswers.includes(opt.id) ? ' selected' : '');
+                btn.innerHTML = `<span class="emoji">${opt.emoji}</span>${opt.label}`;
+                btn.onclick = () => handleOptionClick(q, opt.id, btn);
+                container.appendChild(btn);
+            });
+
+            document.getElementById('btn-back').style.visibility = currentQuestionIndex === 0 ? 'hidden' : 'visible';
+            document.getElementById('btn-next').textContent = currentQuestionIndex === total - 1 ? 'See Results! 🎉' : 'Next →';
+        }
+
+        function handleOptionClick(question, optionId, btn) {
+            if (!answers[question.category]) {
+                answers[question.category] = [];
+            }
+
+            if (question.multi) {
+                const idx = answers[question.category].indexOf(optionId);
+                if (idx > -1) {
+                    answers[question.category].splice(idx, 1);
+                    btn.classList.remove('selected');
+                } else {
+                    if (question.maxSelect && answers[question.category].length >= question.maxSelect) {
+                        const firstSelected = document.querySelector('.option-btn.selected');
+                        if (firstSelected) {
+                            const firstId = answers[question.category].shift();
+                            firstSelected.classList.remove('selected');
+                        }
+                    }
+                    answers[question.category].push(optionId);
+                    btn.classList.add('selected');
+                }
+            } else {
+                answers[question.category] = [optionId];
+                document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+            }
+
+            saveData();
+        }
+
+        function nextQuestion() {
+            const questions = getQuestions();
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        function saveData() {
+            allPlayerData[currentPlayer] = answers;
+            localStorage.setItem('sfquest_data', JSON.stringify(allPlayerData));
+        }
+
+        function showResults() {
+            showScreen('screen-results');
+            const container = document.getElementById('results-container');
+
+            if (currentPlayer === 'edi') {
+                renderEdiResults(container);
+            } else {
+                renderHostResults(container);
+            }
+        }
+
+        function launchConfetti() {
+            const confettiContainer = document.createElement('div');
+            confettiContainer.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden;';
+            document.body.appendChild(confettiContainer);
+            const colors = ['#FF6B35', '#FF4466', '#FFC857', '#2EC4B6', '#6C5CE7', '#FD79A8', '#74B9FF', '#00B894'];
+            const shapes = ['⭐', '✨', '🎮', '🌟', '🎯', '💫', '🕹️', '🏆'];
+            for (let i = 0; i < 60; i++) {
+                const piece = document.createElement('div');
+                const isEmoji = Math.random() > 0.5;
+                if (isEmoji) {
+                    piece.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+                    piece.style.fontSize = (Math.random() * 20 + 12) + 'px';
+                } else {
+                    piece.style.width = (Math.random() * 10 + 5) + 'px';
+                    piece.style.height = (Math.random() * 10 + 5) + 'px';
+                    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                }
+                piece.style.position = 'absolute';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.top = '-20px';
+                piece.style.animation = `confettiFall ${Math.random() * 2 + 2}s linear ${Math.random() * 1.5}s forwards`;
+                confettiContainer.appendChild(piece);
+            }
+            setTimeout(() => confettiContainer.remove(), 5000);
+        }
+
+        function renderEdiResults(container) {
+            const a = answers;
+            const questions = QUESTIONS_EDI;
+
+            const categoryMeta = {
+                landmarks: { icon: '🏛️', title: 'Landmarks to Unlock' },
+                neighborhoods: { icon: '🏘️', title: 'Neighborhoods to Explore' },
+                nature: { icon: '🌲', title: 'Nature & Outdoors to Discover' },
+                food: { icon: '🍽️', title: 'Food Adventures Awaiting' },
+                daytrip_picks: { icon: '🚗', title: 'Day Trips to Embark On' }
+            };
+
+            let html = `
+                <div class="results-title" style="animation: bounceIn 0.8s ease-out;">🎉 QUEST COMPLETE!</div>
+                <div class="results-subtitle" style="font-size:1.2rem; color: var(--gold); margin-bottom:5px;">Congratulations, Edi!</div>
+                <div class="results-subtitle">Here's everything still waiting to be unlocked in SF:</div>
+            `;
+
+            let totalDone = 0;
+            let totalRemaining = 0;
+
+            questions.forEach(q => {
+                const selected = a[q.category] || [];
+                const meta = categoryMeta[q.category];
+                if (!meta) return;
+
+                const notDoneItems = selected.filter(id => !id.startsWith('all_done_'));
+                const allDoneSelected = selected.some(id => id.startsWith('all_done_'));
+                const totalOptions = q.options.filter(opt => !opt.id.startsWith('all_done_')).length;
+
+                if (allDoneSelected || notDoneItems.length === 0) {
+                    totalDone += totalOptions;
+                    html += `
+                        <div class="result-category" style="border-color: rgba(0,184,148,0.3);">
+                            <div class="result-category-header">
+                                <span class="result-category-icon">${meta.icon}</span>
+                                <span class="result-category-title" style="color: var(--green);">${meta.title.replace('to Unlock','to ').replace('to Explore','').replace('to Discover','').replace('Awaiting','').replace('to Embark On','')} — ALL DONE! ✅</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    totalDone += (totalOptions - notDoneItems.length);
+                    totalRemaining += notDoneItems.length;
+                    const notDoneOpts = q.options.filter(opt => notDoneItems.includes(opt.id));
+                    html += `
+                        <div class="result-category">
+                            <div class="result-category-header">
+                                <span class="result-category-icon">${meta.icon}</span>
+                                <span class="result-category-title">${meta.title} (${notDoneOpts.length})</span>
+                            </div>
+                            <div class="result-items">
+                                ${notDoneOpts.map(opt => `<span class="result-tag">${opt.emoji} ${opt.label}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            html += `<div class="score-badge">🕹️ ${totalDone} Done / ${totalRemaining} To Unlock</div>`;
+
+            if (allPlayerData.sibling1 || allPlayerData.sibling2) {
+                html += renderComparison();
+            }
+
+            html += `<button class="reset-btn" onclick="goHome()">← Play Again / Switch Player</button>`;
+            html += `<button class="reset-btn" onclick="resetAll()" style="margin-top:10px; border-color: rgba(255,68,102,0.3); color: rgba(255,68,102,0.6);">🗑️ Reset All Data</button>`;
+
+            container.innerHTML = html;
+            launchConfetti();
+        }
+
+        function renderHostResults(container) {
+            const a = answers;
+            const playerName = currentPlayer === 'sibling1' ? 'Xavi' : 'Tita';
+
+            let html = `
+                <div class="results-title">🏠 ${playerName}'s Local Intel</div>
+                <div class="results-subtitle">Your answers are saved! Here's what you'd bring to Edi's trip.</div>
+            `;
+
+            if (a.landmarks_done && a.landmarks_done.length > 0) {
+                html += `
+                    <div class="result-category">
+                        <div class="result-category-header">
+                            <span class="result-category-icon">🗺️</span>
+                            <span class="result-category-title">Landmarks You Know</span>
+                        </div>
+                        <div class="result-items">
+                            ${a.landmarks_done.map(id => `<span class="result-tag">${getLabelById(id)}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (a.neighborhoods_known && a.neighborhoods_known.length > 0) {
+                html += `
+                    <div class="result-category">
+                        <div class="result-category-header">
+                            <span class="result-category-icon">🏘️</span>
+                            <span class="result-category-title">Neighborhoods You Can Guide</span>
+                        </div>
+                        <div class="result-items">
+                            ${a.neighborhoods_known.map(id => `<span class="result-tag">${getLabelById(id)}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (a.hidden_gems && a.hidden_gems.length > 0) {
+                html += `
+                    <div class="result-category">
+                        <div class="result-category-header">
+                            <span class="result-category-icon">💎</span>
+                            <span class="result-category-title">Secret Spots to Show Edi</span>
+                        </div>
+                        <div class="result-items">
+                            ${a.hidden_gems.map(id => `<span class="result-tag must-do">${getLabelById(id)}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (a.activities_down && a.activities_down.length > 0) {
+                html += `
+                    <div class="result-category">
+                        <div class="result-category-header">
+                            <span class="result-category-icon">🎯</span>
+                            <span class="result-category-title">Activities You're Down For</span>
+                        </div>
+                        <div class="result-items">
+                            ${a.activities_down.map(id => `<span class="result-tag">${getLabelById(id)}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (a.daytrips_join && a.daytrips_join.length > 0) {
+                html += `
+                    <div class="result-category">
+                        <div class="result-category-header">
+                            <span class="result-category-icon">🚗</span>
+                            <span class="result-category-title">Day Trips You'd Join</span>
+                        </div>
+                        <div class="result-items">
+                            ${a.daytrips_join.map(id => `<span class="result-tag">${getLabelById(id)}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (a.food_recs && a.food_recs.length > 0) {
+                html += `
+                    <div class="result-category">
+                        <div class="result-category-header">
+                            <span class="result-category-icon">🍽️</span>
+                            <span class="result-category-title">Food Recs for Edi</span>
+                        </div>
+                        <div class="result-items">
+                            ${a.food_recs.map(id => `<span class="result-tag">${getLabelById(id)}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            const availLabel = a.availability ? getLabelById(a.availability[0]) : 'Unknown';
+            html += `
+                <div class="result-category">
+                    <div class="result-category-header">
+                        <span class="result-category-icon">📅</span>
+                        <span class="result-category-title">Your Availability</span>
+                    </div>
+                    <div class="result-items">
+                        <span class="result-tag must-do">${availLabel}</span>
+                    </div>
+                </div>
+            `;
+
+            if (allPlayerData.edi || allPlayerData.sibling1 || allPlayerData.sibling2) {
+                html += renderComparison();
+            }
+
+            html += `<button class="reset-btn" onclick="goHome()">← Play Again / Switch Player</button>`;
+            html += `<button class="reset-btn" onclick="resetAll()" style="margin-top:10px; border-color: rgba(255,68,102,0.3); color: rgba(255,68,102,0.6);">🗑️ Reset All Data</button>`;
+
+            container.innerHTML = html;
+        }
+
+        function renderComparison() {
+            let html = `<div class="comparison-section">`;
+            html += `<div class="comparison-title">🤝 Group Overlap Finder</div>`;
+
+            const ediData = allPlayerData.edi || {};
+            const host1Data = allPlayerData.sibling1 || {};
+            const host2Data = allPlayerData.sibling2 || {};
+
+            // Find matching activities across players
+            const ediWants = [
+                ...(ediData.mustdo || []),
+                ...(ediData.new_experiences || []),
+                ...(ediData.daytrip_picks || [])
+            ];
+            const host1Down = [
+                ...(host1Data.activities_down || []),
+                ...(host1Data.daytrips_join || [])
+            ];
+            const host2Down = [
+                ...(host2Data.activities_down || []),
+                ...(host2Data.daytrips_join || [])
+            ];
+
+            const everyoneMatches = ediWants.filter(id =>
+                (host1Down.length === 0 || host1Down.includes(id)) &&
+                (host2Down.length === 0 || host2Down.includes(id))
+            );
+
+            if (everyoneMatches.length > 0) {
+                html += `
+                    <div class="match-indicator">
+                        <div class="match-text">🎯 Everyone's In: ${everyoneMatches.length} activities!</div>
+                        <div class="result-items" style="margin-top:10px; justify-content:center;">
+                            ${everyoneMatches.map(id => `<span class="result-tag must-do">${getLabelById(id)}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (ediWants.length > 0) {
+                html += `
+                    <div class="match-indicator" style="background: rgba(255,200,87,0.1); border-color: rgba(255,200,87,0.3);">
+                        <div class="match-text" style="color: var(--gold);">⏳ Waiting for more players to complete!</div>
+                        <p style="color: rgba(255,255,255,0.5); margin-top:5px; font-size:0.85rem;">Once everyone plays, we'll find the perfect overlap.</p>
+                    </div>
+                `;
+            }
+
+            // Show who's completed
+            html += `<div style="text-align:center; margin-top:20px; font-size:0.85rem; color: rgba(255,255,255,0.4);">`;
+            html += `Completed: `;
+            if (allPlayerData.edi) html += `<span style="color:var(--orange);">Edi ✓</span> `;
+            if (allPlayerData.sibling1) html += `<span style="color:var(--teal);">Xavi ✓</span> `;
+            if (allPlayerData.sibling2) html += `<span style="color:var(--purple);">Tita ✓</span> `;
+            html += `</div>`;
+
+            html += `</div>`;
+            return html;
+        }
+
+        function getLabelById(id) {
+            const allOptions = [...QUESTIONS_EDI, ...QUESTIONS_HOST].flatMap(q => q.options);
+            const found = allOptions.find(o => o.id === id);
+            return found ? found.label : id;
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function goHome() {
+            currentPlayer = null;
+            currentQuestionIndex = 0;
+            answers = {};
+            showScreen('screen-welcome');
+        }
+
+        function resetAll() {
+            if (confirm('Reset all player data? This cannot be undone!')) {
+                localStorage.removeItem('sfquest_data');
+                allPlayerData = {};
+                goHome();
+            }
+        }
+
+        // MINI GAME - Golden Gate Bridge Bike Ride
+        let gameRunning = false;
+        let gameLoop = null;
+
+        function startMiniGame() {
+            showScreen('screen-minigame');
+            initGame();
+        }
+
+        function initGame() {
+            const canvas = document.getElementById('game-canvas');
+            const ctx = canvas.getContext('2d');
+
+            const LANE_COUNT = 3;
+            const LANE_WIDTH = 80;
+            const BRIDGE_LEFT = (canvas.width - LANE_COUNT * LANE_WIDTH) / 2;
+            const bridgeLength = 3000;
+
+            let edi = { lane: 1, x: 0, targetX: 0, y: canvas.height - 70, frame: 0 };
+            let gameSpeed = 3;
+            let score = 0;
+            let distance = 0;
+            let obstacles = [];
+            let gameOver = false;
+            let won = false;
+            let frameCount = 0;
+            let roadLines = [];
+            let cables = [];
+            let moveLeft = false;
+            let moveRight = false;
+            let touchStartX = null;
+
+            for (let i = 0; i < 10; i++) {
+                roadLines.push({ y: i * 35 });
+            }
+
+            function getLaneX(lane) {
+                return BRIDGE_LEFT + lane * LANE_WIDTH + LANE_WIDTH / 2;
+            }
+
+            edi.x = getLaneX(edi.lane);
+            edi.targetX = edi.x;
+
+            if (gameLoop) cancelAnimationFrame(gameLoop);
+            gameRunning = true;
+            gameOver = false;
+            won = false;
+
+            function moveEdi(direction) {
+                if (gameOver || won) {
+                    if (gameOver) resetGame();
+                    return;
+                }
+                if (direction === 'left' && edi.lane > 0) {
+                    edi.lane--;
+                } else if (direction === 'right' && edi.lane < LANE_COUNT - 1) {
+                    edi.lane++;
+                }
+                edi.targetX = getLaneX(edi.lane);
+            }
+
+            document.onkeydown = (e) => {
+                if (e.code === 'ArrowLeft' || e.code === 'KeyA') { e.preventDefault(); moveEdi('left'); }
+                if (e.code === 'ArrowRight' || e.code === 'KeyD') { e.preventDefault(); moveEdi('right'); }
+            };
+
+            canvas.ontouchstart = (e) => { touchStartX = e.touches[0].clientX; };
+            canvas.ontouchend = (e) => {
+                if (touchStartX === null) return;
+                const diff = e.changedTouches[0].clientX - touchStartX;
+                if (Math.abs(diff) > 30) {
+                    moveEdi(diff > 0 ? 'right' : 'left');
+                }
+                touchStartX = null;
+            };
+
+            canvas.onclick = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const scaleX = canvas.width / rect.width;
+                const canvasClickX = clickX * scaleX;
+                if (canvasClickX < canvas.width / 2) {
+                    moveEdi('left');
+                } else {
+                    moveEdi('right');
+                }
+            };
+
+            function spawnObstacle() {
+                const lane = Math.floor(Math.random() * LANE_COUNT);
+                const isSeal = Math.random() > 0.55;
+                obstacles.push({
+                    lane: lane,
+                    x: getLaneX(lane),
+                    y: -50,
+                    emoji: isSeal ? '🦭' : ['🚗', '🚙', '🚕', '🛻', '🚐'][Math.floor(Math.random() * 5)],
+                    isSeal: isSeal,
+                    wobble: isSeal ? Math.random() * Math.PI * 2 : 0,
+                    speed: isSeal ? (gameSpeed * 0.7 + Math.random()) : gameSpeed * 0.8
+                });
+            }
+
+            function resetGame() {
+                edi = { lane: 1, x: getLaneX(1), targetX: getLaneX(1), y: canvas.height - 70, frame: 0 };
+                obstacles = [];
+                score = 0;
+                distance = 0;
+                gameOver = false;
+                won = false;
+                gameSpeed = 3;
+                frameCount = 0;
+                document.getElementById('game-instructions').textContent = '← → or click left/right to dodge! Swipe on mobile.';
+            }
+
+            function update() {
+                if (gameOver || won) return;
+
+                frameCount++;
+                distance++;
+                score = Math.floor(distance / 10);
+
+                if (frameCount % Math.max(30, 60 - Math.floor(distance / 200)) === 0) spawnObstacle();
+                if (distance % 300 === 0) gameSpeed += 0.2;
+
+                // Smooth lane movement
+                const dx = edi.targetX - edi.x;
+                edi.x += dx * 0.2;
+                edi.frame++;
+
+                // Road lines
+                roadLines.forEach(line => {
+                    line.y += gameSpeed;
+                    if (line.y > canvas.height) line.y = -20;
+                });
+
+                // Obstacles
+                for (let i = obstacles.length - 1; i >= 0; i--) {
+                    const obs = obstacles[i];
+                    obs.y += obs.speed;
+
+                    if (obs.isSeal) {
+                        obs.wobble += 0.1;
+                        obs.x = getLaneX(obs.lane) + Math.sin(obs.wobble) * 20;
+                    }
+
+                    if (obs.y > canvas.height + 50) {
+                        obstacles.splice(i, 1);
+                        continue;
+                    }
+
+                    // Collision
+                    const hitX = Math.abs(edi.x - obs.x) < 30;
+                    const hitY = Math.abs(edi.y - obs.y) < 35;
+                    if (hitX && hitY) {
+                        gameOver = true;
+                        document.getElementById('game-instructions').textContent = '💀 Crashed! Click or press any key to retry.';
+                    }
+                }
+
+                // Win condition
+                if (distance >= bridgeLength) {
+                    won = true;
+                    document.getElementById('final-game-score').textContent = `🏆 Final Score: ${score}`;
+                    setTimeout(() => {
+                        showScreen('screen-gamewin');
+                        launchConfetti();
+                    }, 1000);
+                }
+
+                document.getElementById('game-score').textContent = `SCORE: ${score} | 🌉 ${Math.min(100, Math.floor(distance / bridgeLength * 100))}% across`;
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Sky
+                const skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                skyGrad.addColorStop(0, '#74B9FF');
+                skyGrad.addColorStop(1, '#a8d8ff');
+                ctx.fillStyle = skyGrad;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Water on sides
+                ctx.fillStyle = 'rgba(46, 134, 193, 0.4)';
+                ctx.fillRect(0, 0, BRIDGE_LEFT - 20, canvas.height);
+                ctx.fillRect(BRIDGE_LEFT + LANE_COUNT * LANE_WIDTH + 20, 0, canvas.width, canvas.height);
+
+                // Bridge deck
+                ctx.fillStyle = '#C0392B';
+                ctx.fillRect(BRIDGE_LEFT - 15, 0, LANE_COUNT * LANE_WIDTH + 30, canvas.height);
+
+                // Road surface
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillRect(BRIDGE_LEFT, 0, LANE_COUNT * LANE_WIDTH, canvas.height);
+
+                // Lane dividers
+                roadLines.forEach(line => {
+                    for (let i = 1; i < LANE_COUNT; i++) {
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                        ctx.fillRect(BRIDGE_LEFT + i * LANE_WIDTH - 2, line.y, 4, 20);
+                    }
+                });
+
+                // Bridge cables (sides)
+                ctx.strokeStyle = '#E74C3C';
+                ctx.lineWidth = 4;
+                for (let side = 0; side < 2; side++) {
+                    const cableX = side === 0 ? BRIDGE_LEFT - 8 : BRIDGE_LEFT + LANE_COUNT * LANE_WIDTH + 8;
+                    ctx.beginPath();
+                    ctx.moveTo(cableX, 0);
+                    ctx.lineTo(cableX, canvas.height);
+                    ctx.stroke();
+
+                    // Vertical cables
+                    for (let cy = 0; cy < canvas.height; cy += 40) {
+                        ctx.strokeStyle = 'rgba(231, 76, 60, 0.5)';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(cableX, cy);
+                        ctx.lineTo(cableX + (side === 0 ? 10 : -10), cy);
+                        ctx.stroke();
+                    }
+                }
+                ctx.lineWidth = 1;
+
+                // Bridge towers
+                const towerProgress = (distance % 600) / 600;
+                const towerY = -200 + towerProgress * (canvas.height + 400);
+                ctx.fillStyle = '#C0392B';
+                ctx.fillRect(BRIDGE_LEFT - 20, towerY, 15, 200);
+                ctx.fillRect(BRIDGE_LEFT + LANE_COUNT * LANE_WIDTH + 5, towerY, 15, 200);
+                ctx.fillRect(BRIDGE_LEFT - 20, towerY, LANE_COUNT * LANE_WIDTH + 40, 12);
+
+                // Obstacles
+                obstacles.forEach(obs => {
+                    ctx.font = obs.isSeal ? '28px serif' : '32px serif';
+                    ctx.textAlign = 'center';
+                    if (obs.isSeal) {
+                        ctx.save();
+                        ctx.translate(obs.x, obs.y);
+                        ctx.rotate(Math.sin(obs.wobble) * 0.3);
+                        ctx.fillText(obs.emoji, 0, 0);
+                        ctx.restore();
+                    } else {
+                        ctx.fillText(obs.emoji, obs.x, obs.y);
+                    }
+                    ctx.textAlign = 'left';
+                });
+
+                // Edi on bike
+                const bikeY = edi.y;
+                const pedalOffset = Math.sin(edi.frame * 0.15) * 3;
+
+                // Bike (larger)
+                ctx.font = '28px serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('🚲', edi.x, bikeY + 22);
+
+                // Edi body on bike (red shirt)
+                ctx.fillStyle = '#E74C3C';
+                ctx.fillRect(edi.x - 10, bikeY - 22, 20, 16);
+                // Head
+                ctx.fillStyle = '#FFD4A8';
+                ctx.beginPath();
+                ctx.arc(edi.x, bikeY - 30, 9, 0, Math.PI * 2);
+                ctx.fill();
+                // Hair
+                ctx.fillStyle = '#4a3728';
+                ctx.fillRect(edi.x - 8, bikeY - 39, 16, 6);
+                // Helmet
+                ctx.fillStyle = '#c0392b';
+                ctx.beginPath();
+                ctx.ellipse(edi.x, bikeY - 37, 10, 7, 0, Math.PI, 0);
+                ctx.fill();
+
+                ctx.textAlign = 'left';
+
+                // Win overlay
+                if (won) {
+                    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.font = '26px Bangers, cursive';
+                    ctx.fillStyle = '#FFC857';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('🌉 BRIDGE CROSSED! YOU MADE IT! 🌉', canvas.width / 2, canvas.height / 2 - 15);
+                    ctx.font = '18px Fredoka, sans-serif';
+                    ctx.fillStyle = 'white';
+                    ctx.fillText('Xavi & Tita are waiting on the other side!', canvas.width / 2, canvas.height / 2 + 20);
+                    ctx.textAlign = 'left';
+                }
+
+                // Game over overlay
+                if (gameOver && !won) {
+                    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.font = '24px Bangers, cursive';
+                    ctx.fillStyle = '#FF4466';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('💀 CRASHED! Click to retry', canvas.width / 2, canvas.height / 2);
+                    ctx.textAlign = 'left';
+                }
+            }
+
+            function loop() {
+                update();
+                draw();
+                if (gameRunning) gameLoop = requestAnimationFrame(loop);
+            }
+
+            document.getElementById('game-instructions').textContent = '← → or click left/right to dodge! Swipe on mobile.';
+            loop();
+        }
+    </script>
+</body>
+</html>
